@@ -1,0 +1,86 @@
+---------------PUNTO 1-----------------
+data Planta = Planta {
+    nombreDePlanta :: String,
+    cantDeVida :: Number,
+    cantDeSoles :: Number,
+    poderDeAtaque :: Number
+}
+
+instance Show Planta where
+    show  = nombreDePlanta 
+
+data Zombie = Zombie {
+    nombreZombie :: String,
+    cantDeAccesorios :: Number,
+    dañoPorMordida:: Number
+}
+
+instance Show Zombie where
+    show  = nombreZombie 
+
+data Linea = Linea{
+    plantas :: [Planta],
+    zombies :: [Zombie]
+}deriving(Show)
+
+nivelDeMuerte = length 
+
+---------------PUNTO 2-----------------
+--A--
+queEspecialidadEs:: Planta -> String
+queEspecialidadEs planta | cantDeSoles planta > 0 = "Proovedora"
+                         | poderDeAtaque planta > cantDeVida planta = "Atacante"
+                         | otherwise = "Defensiva"
+
+--B--
+esPeligroso (Zombie nombre cantDeAccesorios dañoPorMordida) | cantDeAccesorios > 1 = True
+                                                            | nivelDeMuerte nombre > 10 = True
+                                                            | otherwise = False
+
+---------------PUNTO 3-----------------
+--A--
+
+agregarPlanta :: Planta -> Linea -> Linea
+agregarPlanta planta linea = linea { plantas = plantas linea ++ [planta] }
+
+agregarZombie:: Zombie -> Linea -> Linea
+agregarZombie zombie linea = linea { zombies = zombies linea ++ [zombie] }
+
+--B--
+
+sumaAtaquePlantas :: Linea -> Number
+sumaAtaquePlantas linea = sum [poderDeAtaque p | p <- plantas linea]
+
+sumaAtaqueZombies :: Linea -> Number
+sumaAtaqueZombies linea = sum [dañoPorMordida z | z <- zombies linea]
+
+lineaPeligrosa:: Linea -> Bool
+lineaPeligrosa linea = all esPeligroso (zombies linea) 
+
+estaEnPeligro:: Linea -> Bool
+estaEnPeligro linea | sumaAtaquePlantas linea < sumaAtaqueZombies linea = True
+                    | lineaPeligrosa linea = True
+                    | otherwise = False                          
+
+--C--
+
+necesitaSerDefendida :: Linea ->Bool
+necesitaSerDefendida linea = all esProovedora (plantas linea)
+
+esProovedora :: Planta -> Bool
+esProovedora planta = queEspecialidadEs planta == "Proovedora"
+
+---------------PUNTO 4-----------------
+esMixta :: Linea -> Bool
+esMixta (Linea [] _ ) = False  
+esMixta (Linea [_] _ ) = False 
+esMixta (Linea [p1,p2] _) = queEspecialidadEs p1 /= queEspecialidadEs p2 
+esMixta (Linea (p1:p2:plantasRestantes) zombies) = queEspecialidadEs p1 /= queEspecialidadEs p2 && esMixta (Linea(p2:plantasRestantes) zombies)
+
+---------------PUNTO 5-----------------
+
+resultadoAtaquePlantaZombie :: Planta -> Zombie -> Zombie
+resultadoAtaquePlantaZombie planta zombie = zombie{nombreZombie = drop (poderDeAtaque planta) (nombreZombie zombie)}
+
+resultadoAtaqueZombiePlanta :: Zombie -> Planta -> Planta
+resultadoAtaqueZombiePlanta zombie planta = planta{cantDeVida = cantDeVida planta - dañoPorMordida zombie}
