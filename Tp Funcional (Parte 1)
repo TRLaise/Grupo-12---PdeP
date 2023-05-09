@@ -83,4 +83,4 @@ resultadoAtaquePlantaZombie :: Planta -> Zombie -> Zombie
 resultadoAtaquePlantaZombie planta zombie = zombie{nombreZombie = drop (poderDeAtaque planta) (nombreZombie zombie)}
 
 resultadoAtaqueZombiePlanta :: Zombie -> Planta -> Planta
-resultadoAtaqueZombiePlanta zombie planta = planta{cantDeVida = cantDeVida planta - dañoPorMordida zombie}
+resultadoAtaqueZombiePlanta zombie planta = planta{cantDeVida = max 0 (cantDeVida planta - dañoPorMordida zombie)}
