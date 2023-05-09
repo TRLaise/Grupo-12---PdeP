@@ -38,8 +38,8 @@ esPeligroso (Zombie nombre cantDeAccesorios dañoPorMordida) | cantDeAccesorios 
                                                             | otherwise = False
 
 ---------------PUNTO 3-----------------
---A--
 
+--A--
 agregarPlanta :: Planta -> Linea -> Linea
 agregarPlanta planta linea = linea { plantas = plantas linea ++ [planta] }
 
@@ -47,7 +47,6 @@ agregarZombie:: Zombie -> Linea -> Linea
 agregarZombie zombie linea = linea { zombies = zombies linea ++ [zombie] }
 
 --B--
-
 sumaAtaquePlantas :: Linea -> Number
 sumaAtaquePlantas linea = sum [poderDeAtaque p | p <- plantas linea]
 
@@ -63,7 +62,6 @@ estaEnPeligro linea | sumaAtaquePlantas linea < sumaAtaqueZombies linea = True
                     | otherwise = False                          
 
 --C--
-
 necesitaSerDefendida :: Linea ->Bool
 necesitaSerDefendida linea = all esProovedora (plantas linea)
 
@@ -78,7 +76,6 @@ esMixta (Linea [p1,p2] _) = queEspecialidadEs p1 /= queEspecialidadEs p2
 esMixta (Linea (p1:p2:plantasRestantes) zombies) = queEspecialidadEs p1 /= queEspecialidadEs p2 && esMixta (Linea(p2:plantasRestantes) zombies)
 
 ---------------PUNTO 5-----------------
-
 resultadoAtaquePlantaZombie :: Planta -> Zombie -> Zombie
 resultadoAtaquePlantaZombie planta zombie = zombie{nombreZombie = drop (poderDeAtaque planta) (nombreZombie zombie)}
 
