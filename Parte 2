@@ -1,0 +1,89 @@
+-------------------------------------- PARTE 2 ----------------------------------------------
+--Punto 1--
+-- I) 
+
+--Punto 2--
+cactus = Planta "cactus" 9 0 1
+
+--Punto3--
+jardin1 = [linea1,linea2,linea3]
+
+horda1::Horda
+horda1 =[([newsPaperZombie], [linea2]), ([balloonZombie, balloonZombie], [linea1,linea3])]
+
+listaLineasParaUtilizar::[Linea] -> Linea -> [Linea]
+listaLineasParaUtilizar listaL lineaParaComparar = [linea | linea <- listaL, linea == listaParaComparar]
+
+agregar:: ([Zombie],[Linea]) -> Linea -> Linea
+agregar (zombies, lineas) lineaJardin |  
+
+--agregar::Linea -> Horda -> Linea
+--agregar linea (listaZ, [l1:cola]) | l1 == linea = linea{zombies = zombies ++ listaZ}
+--                                  | otherwise = agregar linea cola
+--agregar linea [] = linea
+--agregar linea (listaZ, [l1:cola]) | l1 == linea = linea{zombies = zombies ++ listaZ} 
+ --                                 | otherwise = agregar linea cola
+                                  
+--agregar linea ((listaZ, [l1:cola]):colahordas) | l1 == linea = linea{zombies = zombies ++ listaZ}
+--                                               | otherwise = agregar linea cola                
+
+--jardinNuevo::Jardin -> Horda ->  Jardin
+--jardinNuevo jardin [] = jardin
+--jardinNuevo jardin horda = map (agregar horda) jardin
+
+
+--Punto 4--
+
+fuegoCruzado :: Planta -> Zombie -> Int -> (Planta,Zombie)
+fuegoCruzado planta zombie cantAtaque = (plantaAtacada, zombieAtacado)
+  where
+    plantaAtacada = foldl (\planta _ -> resultadoAtaqueZombiePlanta zombie planta) planta [1..cantAtaque]
+    zombieAtacado = foldl (\zombie _ -> resultadoAtaquePlantaZombie plantaAtacada zombie) zombie [1..cantAtaque]
+
+--Punto5--
+
+murioPlanta::(Planta,Zombie) -> Bool
+murioPlanta fuegoCruzado = cantDeVida (fst fuegoCruzado) <= 0
+
+murioZombie::(Planta,Zombie) -> Bool
+murioZombie fuegoCruzado = null (nombreZombie (snd fuegoCruzado))
+
+--Punto 6--
+
+ataqueSistematico :: [Planta] -> Zombie -> [Planta]
+ataqueSistematico plantas zombie = [fst (fuegoCruzado planta zombie 1) | planta <- plantas]
+
+--Punto 7--
+
+--Punto 8--
+
+--Punto 9--
+
+tieneMenosLetras:: Zombie -> Linea -> Bool
+tieneMenosLetras zombie linea = all (\zombieLinea -> nivelDeMuerte zombieLinea < nivelDeMuerte zombie) (zombies linea)
+
+--Punto 10--
+
+--La funcion ve si el valor h está en la lista. Si lo está, filtra de la lista los valores que cumplan con la función m y devuelve el primer elemento de esa lista. De lo contrario, devuelve el primer elemento de p.
+
+--h es una variable de tipo, m es una funcion, y p es una dupla
+
+--a) En este codigo vemos guardas, composicion, pattern matching, orden superior, polimorfismo paramétrico
+
+--b) f variableBuscada funcion dupla lista | elem variableBuscada lista = head (filter (funcion variableBuscada) lista)
+--                                      | otherwise = fst dupla
+
+--c) Si la lista es infinita, la funcion no va a poder debolver nada porque va a seguir evaluado si el la variableBucada esta en la misma, por lo cual tirara un error de overflow ya que no habra mas memoria.
+
+--Punto 11--
+
+total = 0
+
+sumaVidas::[Planta] -> Int
+sumaVidas listaP = foldl (\total planta -> total + cantDeVida planta) total listaP
+
+sumaMuertes::[Zombie] -> Int
+sumaMuertes listaZ = foldl (\total zombie -> total + nivelDeMuerte zombie) total listaZ
+
+nivelSupervivencia::Linea -> Int
+nivelSupervivencia linea = sumaVidas (plantas linea) - sumaMuertes (zombies linea)
