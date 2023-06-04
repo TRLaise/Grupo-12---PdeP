@@ -1,6 +1,13 @@
 -------------------------------------- PARTE 2 ----------------------------------------------
 --Punto 1--
--- I) 
+-- i) Si al consultar a la funcion "estaenpeligro" se le manda una línea con una cantidad infinita de zombies bases, 
+esta entraría en un bucle infinito y no devolvería nada o a lo sumo un error de overflow ya que necesitaria sumar 
+todo el ataque de los zombies de la lista, y si la lista es infinita, no va a poder terminar nunca.
+
+--ii) Si al consultar si una línea con una cantidad infinita de PeaShooters necesita ser defendida, la funcion devolvería 
+un False directamente ya que el primero de la lista (una Peashooter) no va a cumplir con la condicion por lo tanto devuelve False, 
+en cambio si la linea tiene una cantidad infinita de Sunflowers la funcion entraría en bucle ya que todas las plantas son Sunflower 
+y van a cumplir con la condicion lo que hace que la funcion siga evaluando hasta el infinito. 
 
 --Punto 2--
 cactus = Planta "cactus" 9 0 1
