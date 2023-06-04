@@ -1,2 +1,2 @@
-Parte 1 de Tp Funcional subida, 
+Partes 1 Y 2 de Tp Funcional subidas, 
 Grupo 12 -> Tomas Rodriguez Laise y Bruno Verdun
