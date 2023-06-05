@@ -13,39 +13,31 @@ y van a cumplir con la condicion lo que hace que la funcion siga evaluando hasta
 cactus = Planta "cactus" 9 0 1
 
 --Punto3--
-jardin1 = [linea1,linea2,linea3]
+type Horda = [(Zombie, Linea)]
 
 horda1::Horda
-horda1 =[([newsPaperZombie], [linea2]), ([balloonZombie, balloonZombie], [linea1,linea3])]
+horda1 =[(newsPaperZombie, linea2), (balloonZombie, linea1), (balloonZombie, linea1), (balloonZombie, linea3), (balloonZombie, linea3)]
 
-listaLineasParaUtilizar::[Linea] -> Linea -> [Linea]
-listaLineasParaUtilizar listaL lineaParaComparar = [linea | linea <- listaL, linea == listaParaComparar]
+type Jardin = [Linea]
 
-agregar:: ([Zombie],[Linea]) -> Linea -> Linea
-agregar (zombies, lineas) lineaJardin |  
+jardin1 = [linea1,linea2,linea3]
 
---agregar::Linea -> Horda -> Linea
---agregar linea (listaZ, [l1:cola]) | l1 == linea = linea{zombies = zombies ++ listaZ}
---                                  | otherwise = agregar linea cola
---agregar linea [] = linea
---agregar linea (listaZ, [l1:cola]) | l1 == linea = linea{zombies = zombies ++ listaZ} 
- --                                 | otherwise = agregar linea cola
-                                  
---agregar linea ((listaZ, [l1:cola]):colahordas) | l1 == linea = linea{zombies = zombies ++ listaZ}
---                                               | otherwise = agregar linea cola                
+agregarHordaLinea::Linea -> Horda -> Linea
+agregarHordaLinea linea horda = linea{zombies = zombies linea ++ map fst (filter ((== linea).snd) horda)}
 
---jardinNuevo::Jardin -> Horda ->  Jardin
---jardinNuevo jardin [] = jardin
---jardinNuevo jardin horda = map (agregar horda) jardin
-
+agregarHordaAJardin :: Jardin -> Horda -> Jardin
+agregarHordaAJardin jardin horda = [agregarHordaLinea linea horda | linea <- jardin]
 
 --Punto 4--
 
 fuegoCruzado :: Planta -> Zombie -> Int -> (Planta,Zombie)
-fuegoCruzado planta zombie cantAtaque = (plantaAtacada, zombieAtacado)
-  where
-    plantaAtacada = foldl (\planta _ -> resultadoAtaqueZombiePlanta zombie planta) planta [1..cantAtaque]
-    zombieAtacado = foldl (\zombie _ -> resultadoAtaquePlantaZombie plantaAtacada zombie) zombie [1..cantAtaque]
+fuegoCruzado planta zombie cantAtaque = (plantaAtacada planta zombie cantAtaque, zombieAtacado planta zombie cantAtaque)
+
+plantaAtacada::Planta -> Zombie -> Int -> Planta
+plantaAtacada planta zombie cantAtaque= foldl (\planta _ -> resultadoAtaqueZombiePlanta zombie planta) planta [1..cantAtaque]
+
+zombieAtacado::Planta -> Zombie -> Int -> Zombie
+zombieAtacado planta zombie cantAtaque = foldl (\zombie _ -> resultadoAtaquePlantaZombie plantaAtacada zombie) zombie [1..cantAtaque]
 
 --Punto5--
 
@@ -63,6 +55,19 @@ ataqueSistematico plantas zombie = [fst (fuegoCruzado planta zombie 1) | planta 
 --Punto 7--
 
 --Punto 8--
+theZombiesAteYourBrains :: Jardin -> Horda -> Bool
+theZombiesAteYourBrains jardin horda = gananLosZombies (agregarHordaJardin jardin horda)
+
+gananLosZombies :: Jardin -> Bool
+gananLosZombies = all muerenTodasLasPlantas
+
+muerenTodasLasPlantas :: Linea -> Bool
+muerenTodasLasPlantas linea = not (any ((> 0) . cantDeVida) (ataqueEnSerie linea))
+
+ataqueEnSerie :: Linea -> [Planta]
+ataqueEnSerie linea
+  | null (zombies linea) = plantas linea
+  | otherwise = ataqueEnSerie linea {plantas = ataqueSistematico (plantas linea) (head (zombies linea)), zombies = tail (zombies linea)}
 
 --Punto 9--
 
