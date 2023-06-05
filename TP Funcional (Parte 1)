@@ -35,10 +35,7 @@ queEspecialidadEs  planta | ((>0).cantDeSoles)planta = "Proovedora"
 
 --B--
 esPeligroso :: Zombie -> Bool
-
-esPeligroso zombie | ((>1).cantDeAccesorios)zombie = True
-                   | ((>10).length.nombreZombie)zombie = True
-                   | otherwise = False
+esPeligroso zombie = ((>1).cantDeAccesorios)zombie || ((>10).nivelDeMuerte)zombie
 
 ---------------PUNTO 3-----------------
 --A--
@@ -61,9 +58,8 @@ lineaPeligrosa:: Linea -> Bool
 lineaPeligrosa linea = all esPeligroso (zombies linea) 
 
 estaEnPeligro:: Linea -> Bool                    
-estaEnPeligro linea | ((< sumaAtaqueZombies linea).sumaAtaquePlantas)linea = True
-                    | lineaPeligrosa linea = True
-                    | otherwise = False
+estaEnPeligro linea = ((< sumaAtaqueZombies linea).sumaAtaquePlantas)linea || lineaPeligrosa linea
+
 --C--
 
 necesitaSerDefendida :: Linea -> Bool
