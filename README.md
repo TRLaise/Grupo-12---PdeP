@@ -1,2 +1,2 @@
-Partes 1 Y 2 de Tp Funcional subidas, 
+Tp Logico subido 
 Grupo 12 -> Tomas Rodriguez Laise y Bruno Verdun
