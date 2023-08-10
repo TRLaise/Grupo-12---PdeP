@@ -1,0 +1,119 @@
+personaje(simba).
+personaje(pumba).
+personaje(timon).
+personaje(scar).
+personaje(shenzi). 
+personaje(banzai). 
+
+bicho(vaquitaSanAntonio(_,_)).
+bicho(cucaracha(_,_,_)).
+bicho(hormiga(_)).
+      
+%comio(Personaje, Bicho) 
+comio(pumba, vaquitaSanAntonio(gervasia,3)). 
+comio(pumba, hormiga(federica)). 
+
+comio(pumba, hormiga(tuNoEresLaReina)). 
+comio(pumba, cucaracha(ginger,15,6)). 
+comio(pumba, cucaracha(erikElRojo,25,70)). 
+
+comio(timon, vaquitaSanAntonio(romualda,4)). 
+comio(timon, cucaracha(gimeno,12,8)). 
+comio(timon, cucaracha(cucurucha,12,5)). 
+
+comio(simba, vaquitaSanAntonio(remeditos,4)). 
+comio(simba, hormiga(schwartzenegger)). 
+comio(simba, hormiga(niato)). 
+comio(simba, hormiga(lula)). 
+
+comio(shenzi, hormiga(conCaraDeSimba)). 
+
+pesoHormiga(2). 
+
+%peso(Personaje, Peso) 
+peso(pumba, 100). 
+peso(timon, 50). 
+peso(simba, 200). 
+peso(scar, 300). 
+peso(shenzi, 400). 
+peso(banzai, 500). 
+
+persigue(scar, timon). 
+persigue(scar, pumba). 
+persigue(shenzi, simba). 
+persigue(shenzi, scar). 
+persigue(banzai, timon). 
+persigue(scar, mufasa). 
+
+
+%PUNTO1_a
+esJugosita(cucaracha(Nombre,Tam,Peso)):- comio(_,cucaracha(Nombre2,Tam, Peso2)), Nombre \= Nombre2, Peso > Peso2.
+
+%PUNTO1_b
+esHormigofilico(Personaje):- personaje(Personaje), findall(hormiga(_), comio(Personaje, hormiga(_)), ListaHormigas), length(ListaHormigas, Cantidad), Cantidad >= 2.
+
+%PUNTO1_c
+esCucarachofobico(Personaje):- personaje(Personaje), not(comio(Personaje, cucaracha(_,_,_))).
+
+%PUNTO1_d
+esPicaron(pumba).
+esPicaron(Personaje):- comio(Personaje, vaquitaSanAntonio(remeditos,4)).
+esPicaron(Personaje):- comio(Personaje, cucaracha(Nombre,Tam,Peso)), esJugosita(cucaracha(Nombre,Tam,Peso)).
+
+picarones(Lista):- findall(Personaje, esPicaron(Personaje), Lista).
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+%PUNTO2_a
+
+%pesoCucarachas(Personaje):- findall(PesoC, comio(Personaje, cucaracha(_,_,PesoC)), ListaPesosC), sumlist(ListaPesosC, SumaPesosC).
+%pesoVaquitas(Personaje):- findall(PesoV, comio(Personaje, vaquitaSanAntonio(_,PesoV)), ListaPesosV), sumlist(ListaPesosV, SumaPesosV).
+%pesoHormigas(Personaje):- findall(hormiga(_), comio(Personaje, hormiga(_)), ListaHormigas), length(ListaHormigas, Cantidad), SumaPesosH is (2*Cantidad).
+
+cuantoEngorda(Personaje, Peso):-personaje(Personaje), 
+    							findall(PesoC, comio(Personaje, cucaracha(_,_,PesoC)), ListaPesosC), sumlist(ListaPesosC, SumaPesosC), 
+    							findall(PesoV, comio(Personaje, vaquitaSanAntonio(_,PesoV)), ListaPesosV), sumlist(ListaPesosV, SumaPesosV),
+    							findall(hormiga(_), comio(Personaje, hormiga(_)), ListaHormigas), length(ListaHormigas, Cantidad), SumaPesosH is (2*Cantidad),
+    							Peso is (SumaPesosC + SumaPesosV + SumaPesosH).
+
+%PUNTO2_b
+
+cuantoEngorda2(Personaje, Peso):-  personaje(Personaje), 
+    							   findall(PesoC, comio(Personaje, cucaracha(_,_,PesoC)), ListaPesosC), sumlist(ListaPesosC, SumaPesosC), 
+    							   findall(PesoV, comio(Personaje, vaquitaSanAntonio(_,PesoV)), ListaPesosV), sumlist(ListaPesosV, SumaPesosV),
+   							 	   findall(hormiga(_), comio(Personaje, hormiga(_)), ListaHormigas), length(ListaHormigas, Cantidad), SumaPesosH is (2*Cantidad),
+								   findall(PesoAnimalCazado, (persigue(Personaje, Cazado), peso(Cazado, PesoAnimalCazado)), ListaPesosCazados), sumlist(ListaPesosCazados, SumaPesosCazados),
+   							       Peso is (SumaPesosC + SumaPesosV + SumaPesosH + SumaPesosCazados).
+
+%PUNTO2_c(Revisar)
+
+cuantoEngorda2(Personaje, Peso):-  personaje(Personaje), 
+    							   findall(PesoC, comio(Personaje, cucaracha(_,_,PesoC)), ListaPesosC), sumlist(ListaPesosC, SumaPesosC), 
+    							   findall(PesoV, comio(Personaje, vaquitaSanAntonio(_,PesoV)), ListaPesosV), sumlist(ListaPesosV, SumaPesosV),
+   							 	   findall(hormiga(_), comio(Personaje, hormiga(_)), ListaHormigas), length(ListaHormigas, Cantidad), SumaPesosH is (2*Cantidad),
+								   findall(PesoAnimalCazado, (persigue(Personaje, Cazado), peso(Cazado, PesoAnimalCazado)), ListaPesosCazados), sumlist(ListaPesosCazados, SumaPesosCazados),
+   							       Peso is (SumaPesosC + SumaPesosV + SumaPesosH + SumaPesosCazados).
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+%PUNTO3
+
+combinaComidas(Personaje, ListaAlimentos):- personaje(Personaje), 
+    					  					findall(Animal, persigue(Personaje, Animal), ListaAnimalesCazados), 
+    					  					findall(Bicho, comio(Personaje, Bicho), ListaBichos),
+    					  					append(ListaAnimalesCazados, ListaBichos, ListaAlimentos).
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+%PUNTO4
+
+esAdorado(Personaje):- personaje(Personaje),
+    				   forall(personaje(Animal), (not(persigue(Personaje, Animal)), not(comio(Personaje, Animal)))),
+					   forall( bicho(Bicho), not(comio(Personaje, Bicho))).
+
+rey(Personaje):- once(persigue(_, Personaje)), esAdorado(Personaje).
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+%PUNTO5
+
