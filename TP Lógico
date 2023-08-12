@@ -117,3 +117,6 @@ rey(Personaje):- once(persigue(_, Personaje)), esAdorado(Personaje).
 
 %PUNTO5
 
+Utilizamos la inversibilidad en los puntos: 1a, 1c, 1d, 2 ,3 y 4.
+Utilizamos polimorfismo en el punto 2.
+No utilizamos recursividad en ningun punto.
